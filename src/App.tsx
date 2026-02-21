@@ -9,6 +9,7 @@ import NewPatient from "./pages/NewPatient";
 import PatientResult from "./pages/PatientResult";
 import DoctorPatientView from "./pages/DoctorPatientView";
 import Leaderboard from "./pages/Leaderboard";
+import PatientDashboard from "./pages/PatientDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/chew/patient-result" element={<PatientResult />} />
           <Route path="/doctor/patient/:id" element={<DoctorPatientView />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/patient/dashboard" element={<PatientDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

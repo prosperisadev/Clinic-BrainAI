@@ -1,20 +1,22 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, Stethoscope, Users } from "lucide-react";
+import { Heart, Stethoscope, Users, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [role, setRole] = useState<"chew" | "doctor" | null>(null);
+  const [role, setRole] = useState<"chew" | "doctor" | "patient" | null>(null);
   const [phone, setPhone] = useState("");
   const [pin, setPin] = useState("");
+  const [patientToken, setPatientToken] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (role === "chew") navigate("/chew/dashboard");
-    else navigate("/doctor/patient/1");
+    else if (role === "doctor") navigate("/doctor/patient/1");
+    else if (role === "patient") navigate("/patient/dashboard");
   };
 
   return (
@@ -36,7 +38,7 @@ const Login = () => {
           <p className="text-sm font-medium text-foreground mb-3 text-center">
             Who are you?
           </p>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <button
               type="button"
               onClick={() => setRole("chew")}
@@ -67,11 +69,26 @@ const Login = () => {
               </span>
               <span className="text-xs text-muted-foreground">Physician</span>
             </button>
+            <button
+              type="button"
+              onClick={() => setRole("patient")}
+              className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
+                role === "patient"
+                  ? "border-primary bg-primary/5 card-shadow-hover"
+                  : "border-border bg-card card-shadow hover:border-primary/40"
+              }`}
+            >
+              <UserCircle className={`w-7 h-7 ${role === "patient" ? "text-primary" : "text-muted-foreground"}`} />
+              <span className={`text-sm font-semibold ${role === "patient" ? "text-primary" : "text-foreground"}`}>
+                Patient
+              </span>
+              <span className="text-xs text-muted-foreground">My Health</span>
+            </button>
           </div>
         </div>
 
         {/* Login Form */}
-        {role && (
+        {role && role !== "patient" && (
           <form onSubmit={handleLogin} className="space-y-4 animate-fade-in">
             <div className="bg-card rounded-xl p-5 card-shadow space-y-4">
               <div>
@@ -107,6 +124,36 @@ const Login = () => {
             </Button>
             <p className="text-center text-xs text-muted-foreground">
               Don't have an account? Contact your supervisor
+            </p>
+          </form>
+        )}
+
+        {/* Patient Access Form */}
+        {role === "patient" && (
+          <form onSubmit={handleLogin} className="space-y-4 animate-fade-in">
+            <div className="bg-card rounded-xl p-5 card-shadow space-y-4">
+              <p className="text-sm text-muted-foreground text-center">
+                Enter your Health ID or phone number to see your health record
+              </p>
+              <div>
+                <Label htmlFor="patientToken" className="text-sm font-medium">
+                  Health ID or Phone Number
+                </Label>
+                <Input
+                  id="patientToken"
+                  type="text"
+                  placeholder="e.g. NG-CHW-2024-00048 or 080..."
+                  value={patientToken}
+                  onChange={(e) => setPatientToken(e.target.value)}
+                  className="mt-1.5 h-12 text-base"
+                />
+              </div>
+            </div>
+            <Button type="submit" className="w-full h-12 text-base font-semibold rounded-xl">
+              View My Health
+            </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              Ask your health worker for your Health ID
             </p>
           </form>
         )}
